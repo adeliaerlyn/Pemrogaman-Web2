@@ -54,4 +54,36 @@ class HomeController extends Controller
         $barang->save();
         return redirect()->to('/home');
     }
+    public function show($id)
+    {
+        $barang = Barang::find($id);
+        return view('show', compact('barang'));
+    }
+    public function edit($id)
+    {
+        $barang = Barang::find($id);
+        return view('edit', compact('barang'));        
+    }
+    public function update(Request $request, $id)
+    {
+        $barang = Barang::find($id);
+        $folder = 'uploads';
+        if ($request->file('gambar') != null) {            
+            $file = $request->file('gambar');
+            $file->move($folder, $file->getClientOriginalName());
+            $barang->gambar = $file->getClientOriginalName();
+        }
+        $barang->nama_barang = $request->nama;
+        $barang->harga = $request->harga;
+        $barang->stok = $request->stok;
+        $barang->keterangan = $request->keterangan;
+        $barang->save();
+        return redirect()->to('/home');    
+    }
+    public function delete($id)
+    {
+        $barang = Barang::find($id);
+        $barang->delete();
+        return redirect()->to('/home'); 
+    }
 }
